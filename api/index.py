@@ -34,6 +34,7 @@ else:
 mock_lat = 28.6139
 mock_lng = 77.2090
 coord_lock = threading.Lock()
+db_initialized = False
 
 # ----------------------------------------------------
 # DATABASE INITIALIZER & CONTEXT HELPERS
@@ -207,7 +208,10 @@ def handle_options_preflight():
 
 @app.before_request
 def setup_db():
-    init_db()
+    global db_initialized
+    if not db_initialized:
+        init_db()
+        db_initialized = True
 
 # ----------------------------------------------------
 # PASSWORD HASHING & HMAC TOKENS
