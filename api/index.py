@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 import sqlite3
 import hashlib
 import hmac
@@ -12,8 +11,13 @@ import base64
 import traceback
 
 app = Flask(__name__)
-# Enable CORS for all origins, allowing Authorization and content-type headers
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+@app.after_request
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    return response
 
 
 
@@ -191,6 +195,15 @@ def init_db():
 
     conn.commit()
     conn.close()
+
+@app.before_request
+def handle_options_preflight():
+    if request.method == 'OPTIONS':
+        response = app.make_response('')
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+        return response
 
 @app.before_request
 def setup_db():
