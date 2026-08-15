@@ -834,7 +834,11 @@ def handle_exception(e):
     import traceback
     return jsonify({
         "error": str(e),
-        "traceback": traceback.format_exc()
+        "traceback": traceback.format_exc(),
+        "request_url": request.url,
+        "request_path": request.path,
+        "request_script_name": request.script_name,
+        "request_environ": {k: str(v) for k, v in request.environ.items() if k in ('PATH_INFO', 'SCRIPT_NAME', 'REQUEST_URI', 'HTTP_HOST', 'RAW_URI')}
     }), 500
 
 # ----------------------------------------------------
