@@ -15,18 +15,7 @@ app = Flask(__name__)
 # Enable CORS for all origins, allowing Authorization and content-type headers
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-class AddPrefixMiddleware(object):
-    def __init__(self, app, prefix='/api'):
-        self.app = app
-        self.prefix = prefix
 
-    def __call__(self, environ, start_response):
-        path = environ.get('PATH_INFO', '')
-        if not path.startswith(self.prefix):
-            environ['PATH_INFO'] = self.prefix + path
-        return self.app(environ, start_response)
-
-app.wsgi_app = AddPrefixMiddleware(app.wsgi_app, prefix='/api')
 
 JWT_SECRET = os.environ.get('JWT_SECRET', 'rayglides_super_secret_signing_key_2026').encode('utf-8')
 TARIFF_RATE_PER_KWH = 8.5 # INR / local currency per kWh
@@ -246,6 +235,7 @@ def get_auth_user():
 # AUTHENTICATION ROUTING
 # ----------------------------------------------------
 @app.route('/api/auth/signup', methods=['POST'])
+@app.route('/auth/signup', methods=['POST'])
 def signup():
     body = request.get_json() or {}
     name = body.get('name')
@@ -283,6 +273,7 @@ def signup():
         conn.close()
 
 @app.route('/api/auth/send-otp', methods=['POST'])
+@app.route('/auth/send-otp', methods=['POST'])
 def send_otp():
     body = request.get_json() or {}
     contact_info = body.get('contact_info')
@@ -307,6 +298,7 @@ def send_otp():
     return jsonify(resp)
 
 @app.route('/api/auth/signin-otp', methods=['POST'])
+@app.route('/auth/signin-otp', methods=['POST'])
 def signin_otp():
     body = request.get_json() or {}
     contact_info = body.get('contact_info')
@@ -356,6 +348,7 @@ def signin_otp():
         return jsonify({"success": True, "token": token, "user": {"id": user['id'], "name": user['name'], "role": user['role'], "email": user['email']}})
 
 @app.route('/api/auth/signin-password', methods=['POST'])
+@app.route('/auth/signin-password', methods=['POST'])
 def signin_password():
     body = request.get_json() or {}
     email = body.get('email')
@@ -377,6 +370,7 @@ def signin_password():
     return jsonify({"success": True, "token": token, "user": {"id": user['id'], "name": user['name'], "role": user['role'], "email": user['email']}})
 
 @app.route('/api/auth/google-login', methods=['POST'])
+@app.route('/auth/google-login', methods=['POST'])
 def google_login():
     body = request.get_json() or {}
     email = body.get('email')
@@ -412,6 +406,7 @@ def google_login():
 # DRIVER DIAGNOSTICS & TELEMETRY
 # ----------------------------------------------------
 @app.route('/api/driver/vehicle-status', methods=['GET'])
+@app.route('/driver/vehicle-status', methods=['GET'])
 def vehicle_status():
     user = get_auth_user()
     if not user:
@@ -456,6 +451,7 @@ def vehicle_status():
     return jsonify(response)
 
 @app.route('/api/driver/savings-summary', methods=['GET'])
+@app.route('/driver/savings-summary', methods=['GET'])
 def savings_summary():
     user = get_auth_user()
     if not user:
@@ -491,6 +487,7 @@ def savings_summary():
 # PROFILE UPDATES & VEHICLE CONFIGURATION
 # ----------------------------------------------------
 @app.route('/api/driver/update-profile', methods=['POST'])
+@app.route('/driver/update-profile', methods=['POST'])
 def update_profile():
     user = get_auth_user()
     if not user:
@@ -510,6 +507,7 @@ def update_profile():
     return jsonify({"success": True, "message": "Emergency profile updated successfully"})
 
 @app.route('/api/driver/select-vehicle', methods=['POST'])
+@app.route('/driver/select-vehicle', methods=['POST'])
 def select_vehicle():
     user = get_auth_user()
     if not user:
@@ -532,6 +530,7 @@ def select_vehicle():
 # REAL DATABASE RIDES / ORDERS SYSTEM
 # ----------------------------------------------------
 @app.route('/api/rides/create', methods=['POST'])
+@app.route('/rides/create', methods=['POST'])
 def create_ride():
     # Anyone can create a mock customer order request
     body = request.get_json() or {}
@@ -556,6 +555,7 @@ def create_ride():
     return jsonify({"success": True, "message": "Delivery order created successfully", "ride_id": ride_id})
 
 @app.route('/api/rides/available', methods=['GET'])
+@app.route('/rides/available', methods=['GET'])
 def get_available_rides():
     user = get_auth_user()
     if not user:
@@ -569,6 +569,7 @@ def get_available_rides():
     return jsonify([dict(r) for r in rows])
 
 @app.route('/api/rides/accept', methods=['POST'])
+@app.route('/rides/accept', methods=['POST'])
 def accept_ride():
     user = get_auth_user()
     if not user:
@@ -599,6 +600,7 @@ def accept_ride():
     return jsonify({"success": True, "message": "Delivery order accepted successfully"})
 
 @app.route('/api/rides/update-status', methods=['POST'])
+@app.route('/rides/update-status', methods=['POST'])
 def update_ride_status():
     user = get_auth_user()
     if not user:
@@ -633,6 +635,7 @@ def update_ride_status():
     return jsonify({"success": True, "message": f"Delivery status updated to: {status}"})
 
 @app.route('/api/driver/rides-history', methods=['GET'])
+@app.route('/driver/rides-history', methods=['GET'])
 def get_driver_rides():
     user = get_auth_user()
     if not user:
@@ -651,6 +654,7 @@ def get_driver_rides():
 # ADMIN EXCLUSIVE REPORTING
 # ----------------------------------------------------
 @app.route('/api/admin/users', methods=['GET'])
+@app.route('/admin/users', methods=['GET'])
 def admin_users():
     user = get_auth_user()
     if not user or user["role"] != 'admin':
@@ -669,6 +673,7 @@ def admin_users():
     return jsonify([dict(r) for r in rows])
 
 @app.route('/api/admin/fleet-status', methods=['GET'])
+@app.route('/admin/fleet-status', methods=['GET'])
 def admin_fleet():
     user = get_auth_user()
     if not user or user["role"] != 'admin':
@@ -691,6 +696,7 @@ def admin_fleet():
     return jsonify([dict(r) for r in rows])
 
 @app.route('/api/admin/rides', methods=['GET'])
+@app.route('/admin/rides', methods=['GET'])
 def admin_rides():
     user = get_auth_user()
     if not user or user["role"] != 'admin':
@@ -713,6 +719,7 @@ def admin_rides():
 # RAZORPAY MOCK PAYMENTS SYSTEM
 # ----------------------------------------------------
 @app.route('/api/payments/create-order', methods=['POST'])
+@app.route('/payments/create-order', methods=['POST'])
 def create_order():
     body = request.get_json() or {}
     amount = body.get('amount', 500)
@@ -727,6 +734,7 @@ def create_order():
     })
 
 @app.route('/api/subscriptions/checkout', methods=['POST'])
+@app.route('/subscriptions/checkout', methods=['POST'])
 def subscriptions_checkout():
     chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     random_id = ''.join(random.choice(chars) for _ in range(14))
@@ -740,6 +748,7 @@ def subscriptions_checkout():
     })
 
 @app.route('/api/payments/verify', methods=['POST'])
+@app.route('/payments/verify', methods=['POST'])
 def verify_payment():
     body = request.get_json() or {}
     order_id = body.get('razorpay_order_id')
