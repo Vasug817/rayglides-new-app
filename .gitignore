@@ -1,0 +1,6 @@
+node_modules/
+.pio/
+__pycache__/
+*.db
+*.db-journal
+.DS_Store
