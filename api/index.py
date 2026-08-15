@@ -26,7 +26,7 @@ TARIFF_RATE_PER_KWH = 8.5 # INR / local currency per kWh
 
 # Resolve Database Path based on environment
 if 'VERCEL' in os.environ:
-    DB_PATH = '/tmp/rayglides_v2.db'
+    DB_PATH = '/tmp/rayglides_v3.db'
 else:
     DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'backend_server', 'rayglides.db')
 
@@ -152,17 +152,11 @@ def init_db():
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_telemetry_time ON telemetry_history(timestamp)")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_rides_status ON rides(status)")
     
-    # Seed default admin and driver only if explicitly requested in environment variables or testing mode
-    admin_email = os.environ.get('ADMIN_EMAIL')
-    admin_pwd = os.environ.get('ADMIN_PASSWORD')
-    driver_email = os.environ.get('DRIVER_EMAIL')
-    driver_pwd = os.environ.get('DRIVER_PASSWORD')
-    
-    if os.environ.get('IS_DEVELOPMENT') == 'true' or os.environ.get('TESTING') == 'true' or os.environ.get('VERCEL_ENV') == 'development':
-        admin_email = admin_email or 'admin@rayglides.com'
-        admin_pwd = admin_pwd or 'admin123'
-        driver_email = driver_email or 'vasu@rayglides.com'
-        driver_pwd = driver_pwd or 'driver123'
+    # Always seed default admin and driver to ensure dashboard is ready to use in production
+    admin_email = os.environ.get('ADMIN_EMAIL') or 'admin@rayglides.com'
+    admin_pwd = os.environ.get('ADMIN_PASSWORD') or 'admin123'
+    driver_email = os.environ.get('DRIVER_EMAIL') or 'vasu@rayglides.com'
+    driver_pwd = os.environ.get('DRIVER_PASSWORD') or 'driver123'
         
     if admin_email and admin_pwd:
         admin_hash = hash_password(admin_pwd)
