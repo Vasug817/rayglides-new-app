@@ -26,7 +26,7 @@ TARIFF_RATE_PER_KWH = 8.5 # INR / local currency per kWh
 
 # Resolve Database Path based on environment
 if 'VERCEL' in os.environ:
-    DB_PATH = '/tmp/rayglides.db'
+    DB_PATH = '/tmp/rayglides_v2.db'
 else:
     DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'backend_server', 'rayglides.db')
 
