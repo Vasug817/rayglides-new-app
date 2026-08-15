@@ -10,7 +10,6 @@ import threading
 import json
 import base64
 import traceback
-import paho.mqtt.client as mqtt
 
 app = Flask(__name__)
 # Enable CORS for all origins, allowing Authorization and content-type headers
@@ -773,6 +772,7 @@ def verify_payment():
 # MQTT BACKGROUND THREAD (LOCAL DEVELOPMENT ONLY)
 # ----------------------------------------------------
 def mqtt_bridge_thread():
+    import paho.mqtt.client as mqtt
     client = mqtt.Client()
     
     def on_connect(client, userdata, flags, rc):
