@@ -43,6 +43,15 @@ def init_db():
     conn = get_db()
     cursor = conn.cursor()
     
+    # Concurrency Protection: Skip if tables are already structured
+    try:
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
+        if cursor.fetchone():
+            conn.close()
+            return
+    except Exception:
+        pass
+    
     # 1. Users Table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
