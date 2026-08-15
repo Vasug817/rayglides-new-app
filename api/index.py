@@ -16,6 +16,19 @@ app = Flask(__name__)
 # Enable CORS for all origins, allowing Authorization and content-type headers
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
+class AddPrefixMiddleware(object):
+    def __init__(self, app, prefix='/api'):
+        self.app = app
+        self.prefix = prefix
+
+    def __call__(self, environ, start_response):
+        path = environ.get('PATH_INFO', '')
+        if not path.startswith(self.prefix):
+            environ['PATH_INFO'] = self.prefix + path
+        return self.app(environ, start_response)
+
+app.wsgi_app = AddPrefixMiddleware(app.wsgi_app, prefix='/api')
+
 JWT_SECRET = os.environ.get('JWT_SECRET', 'rayglides_super_secret_signing_key_2026').encode('utf-8')
 TARIFF_RATE_PER_KWH = 8.5 # INR / local currency per kWh
 
