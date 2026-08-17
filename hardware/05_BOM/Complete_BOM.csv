@@ -1,0 +1,31 @@
+Ref,Component,Value,Manufacturer,Part Number,Package,Quantity,Purpose
+F1,Input Fuse,2A Slow-Blow,Littelfuse,0452002.MRL,UMF (SMD 2410),1,48V overcurrent protection
+D1,Reverse Polarity Diode,100V 1A Schottky,Diodes Inc.,DFLS1100-7,PowerDI-123,1,Input reverse connection protection
+D2,TVS Diode,SMCJ58A (Uni-dir),Littelfuse,SMCJ58A,SMC (DO-214AB),1,Vehicle supply surge clamping (clamping at 93V)
+C1,Input Filter Cap 1,10uF 100V,Panasonic,EEU-FR2A100,Radial (5x11mm),1,Pi filter high-voltage bulk capacitor
+C2,Input Filter Cap 2,10uF 100V,Panasonic,EEU-FR2A100,Radial (5x11mm),1,Pi filter output bulk capacitor
+L1,Filter Inductor,47uH,Bourns,SRR1260-470M,SMD 12x12mm,1,Pi filter ripple suppression inductor
+U1,12V Buck Regulator,LM5017 Buck Converter,Texas Instruments,LM5017MR/NOPB,SO PowerPAD-8,1,Nominal 12V intermediate step-down supply
+L2,Power Inductor,220uH,Bourns,SRR1260-221K,SMD 12x12mm,1,LM5017 output ripple suppression inductor
+C3,Buck Bypass Cap,1uF 100V,Murata,GRM31CR72A105KA01L,1206 (SMD),1,LM5017 high-frequency bypass capacitor
+C4,Boot Cap,0.01uF 50V,Yageo,CC0603KRX7R9BB103,0603 (SMD),1,LM5017 floating gate-drive boot capacitor
+C5,Buck Output Cap,10uF 25V,Murata,GRM21BR71E106KA73L,0805 (SMD),1,12V intermediate rail filter capacitor
+R1,Feedback Resistor High,88.7k 1%,Yageo,RC0603FR-0788K7L,0603 (SMD),1,LM5017 output voltage setting (12V feedback loop)
+R2,Feedback Resistor Low,10k 1%,Yageo,RC0603FR-0710KL,0603 (SMD),1,LM5017 feedback divider lower resistor
+D3,Boot Diode,Fast Switching,ON Semiconductor,1N4148W-7-F,SOD-123,1,LM5017 boot capacitor charging diode
+U2,5V Buck Regulator,AP63205 2A Buck,Diodes Inc.,AP63205WU-7,TSOT26,1,Secondary high-efficiency step-down supply
+U3,3.3V LDO,AP2112K-3.3 (600mA),Diodes Inc.,AP2112K-3.3TRG1,SOT-25,1,Low-noise MCU logic rail LDO regulator
+Q1,Switching MOSFET,N-Ch 30V 5.7A,Alpha & Omega,AO3400A,SOT-23,1,Low-side fan PWM control switch
+R4,Gate Resistor,100R 5%,Yageo,RC0603JR-07100RL,0603 (SMD),1,MOSFET switching current limit resistor
+R5,Gate Pull-down,10k 5%,Yageo,RC0603JR-0710KL,0603 (SMD),1,MOSFET default-OFF gate state pull-down
+D4,Flyback Diode,1N4148 Fast,ON Semiconductor,1N4148W-7-F,SOD-123,1,Fan motor inductive kickback clamping
+U4,Temp Sensor,LM35 Active Linear,Texas Instruments,LM35DT/NOPB,TO-220-3,1,Heatsink temperature analog active sensor
+R6,ADC Resistor,1k 1%,Yageo,RC0603FR-071KL,0603 (SMD),1,ADC input filter series resistor
+R7,Sensor Load Resistor,200R 1%,Yageo,RC0603FR-07200RL,0603 (SMD),1,LM35 output load pull-down resistor
+C9,ADC Filter Cap,100nF 50V,Yageo,CC0603KRX7R9BB104,0603 (SMD),1,ADC analog high-frequency noise filter capacitor
+D5,ADC TVS Clamp,3.3V Zener,ON Semiconductor,BZX84C3V3LT1G,SOT-23,1,MCU ADC pin input voltage protection clamp
+C7,MCU Decoupling Cap,100nF 50V,Yageo,CC0603KRX7R9BB104,0603 (SMD),1,ESP32-S3 VDD high-frequency decoupling capacitor
+C8,Sensor Decoupling Cap,100nF 50V,Yageo,CC0603KRX7R9BB104,0603 (SMD),1,LM35 VCC high-frequency decoupling capacitor
+J1,Vehicle Power Conn,Molex Micro-Fit 3.0,Molex,43650-0215,SMD Vertical,1,Primary vehicle power harness socket
+J2,Fan Output Conn,Molex Micro-Fit 3.0,Molex,43650-0215,SMD Vertical,1,Cooling fan wiring harness socket
+J3,Temp Sensor Conn,Molex Micro-Fit 3.0,Molex,43650-0315,SMD Vertical,1,Sensor extension cable harness socket
