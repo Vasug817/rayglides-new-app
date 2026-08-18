@@ -15,7 +15,21 @@ This document defines the validation procedures for newly manufactured cooling c
 
 ---
 
-## 2. Temperature Sensor Loop Verification
+## 2. Native USB-C Programming & JTAG Boot Test
+1.  Connect a standard USB-C cable from a host PC to J5 connector.
+2.  Verify the ESP32-S3 module powers up and is recognized by the operating system as a native USB Serial Device.
+3.  Flash a test blinky script using PlatformIO over the native interface to confirm successful JTAG bootloading and connection.
+
+---
+
+## 3. CAN Bus Transceiver Validation
+1.  Configure the ESP32-S3 TWAI peripheral in self-test loopback mode.
+2.  Transmit a series of CAN frames over GPIO 9 and read them back on GPIO 10 via the TJA1050 transceiver.
+3.  Connect a CAN analyzer to J4 (CANH/CANL). Confirm that the differential voltages are $2.5\text{V}$ during recessive state and $3.5\text{V}$ / $1.5\text{V}$ during dominant state.
+
+---
+
+## 4. Temperature Sensor Loop Verification
 *   **Equipment**: Decade Resistance Box (or adjustable potentiometer to mock LM35 output), Multimeters.
 *   **Procedure**:
     1.  Disconnect the physical LM35 sensor from J3.
@@ -28,7 +42,7 @@ This document defines the validation procedures for newly manufactured cooling c
 
 ---
 
-## 3. Fail-Safe and Fault Mode Tests
+## 5. Fail-Safe and Fault Mode Tests
 *   **Procedure**:
     1.  **Sensor Disconnect Test**: With the fan running, disconnect J3 Pin 2 (Sensor Output). Verify that the ADC voltage drops to 0V (pulled down by R7 200R). Verify that the firmware detects sensor failure and sets the fan to **100% duty cycle** (fail-safe speed) or triggers F004 over-temperature protection.
     2.  **Sensor Short Test**: Short J3 Pin 2 to Pin 1 (+5V). Verify that the ADC voltage rises above 1.25V. Verify that the firmware registers an out-of-bounds fault and triggers emergency shutdown.

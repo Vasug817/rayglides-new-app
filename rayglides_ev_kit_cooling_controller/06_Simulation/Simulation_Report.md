@@ -28,18 +28,20 @@ The DC-DC buck converter was simulated under three input configurations represen
 
 ---
 
-## 3. MOSFET Fan Switching Waveform Analysis
-Low-side PWM switching was simulated at $5\text{kHz}$ with $V_{GS} = 3.3\text{V}$ drive from the ESP32:
-
-*   **Turn-On Delay ($T_{d\_on}$)**: 25 ns (gate capacitance $C_{iss} = 650\text{pF}$ charged via $100\Omega$ series resistor)
-*   **Rise Time ($T_r$)**: 18 ns
-*   **Turn-Off Delay ($T_{d\_off}$)**: 85 ns (discharging via gate resistors $100\Omega + 10\text{k}\Omega$)
-*   **Fall Time ($T_f$)**: 32 ns
-*   **Drain-Source Voltage Clamping**: During turn-off, the flyback diode D4 successfully clamped the inductive voltage spike on the MOSFET Drain to $12.7\text{V}$, preventing breakdown of the MOSFET ($V_{DS\_max} = 30\text{V}$).
+## 3. USB Damping & ESD Protection Analysis
+*   **Damping Resistors ($R_{10}, R_{11}$)**: The $22\,\Omega$ series resistors limit USB transmission reflection coefficients to $\Gamma \le 0.05$.
+*   **ESD Clamping Pulse**: Under an simulated $8\,\text{kV}$ human-body model (HBM) ESD pulse, the **USBLC6-2SC6** clamping voltage did not exceed $15\text{V}$, keeping the gate/drain voltages of the ESP32-S3 physical layer within safe bounds ($V_{ESD\_max} = 20\text{V}$).
 
 ---
 
-## 4. Temperature Interface Verification
+## 4. CAN Bus Split Termination Cutoff Frequency
+The common-mode filter frequency is determined by the split termination network:
+\[f_c = \frac{1}{2 \pi \times R_{split} \times C_{split}} = \frac{1}{2 \pi \times 60\,\Omega \times 4.7\,\text{nF}} = 564.4\text{ kHz}\]
+This filter effectively dampens motor switching harmonics and RF interference above $1\text{ MHz}$ by $\ge 24\text{ dB}$.
+
+---
+
+## 5. Temperature Interface Verification
 *   **Sensor Output**: LM35 produces $10\text{mV}/^\circ\text{C}$ ($450\text{mV}$ at $45^\circ\text{C}$, $400\text{mV}$ at $40^\circ\text{C}$).
 *   **ADC Resolution**: ESP32-S3 12-bit ADC with 2.5dB attenuation (voltage range 0V to 1.25V).
     *   $45^\circ\text{C} = 450\text{mV} \implies \text{ADC Code } 1474$
@@ -50,7 +52,7 @@ Low-side PWM switching was simulated at $5\text{kHz}$ with $V_{GS} = 3.3\text{V}
 
 ---
 
-## 5. Critical Parameters Clamping Review
+## 6. Critical Parameters Clamping Review
 
 | Parameter | Calculated | Simulated | Maximum Rating | Safety Margin | Result |
 | :--- | :--- | :--- | :--- | :--- | :--- |

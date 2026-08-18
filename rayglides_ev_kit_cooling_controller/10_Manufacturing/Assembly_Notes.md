@@ -18,6 +18,6 @@ This document provides assembly line guidelines for solder paste application, co
 ---
 
 ## 3. Visual Quality Inspection Criteria (IPC-A-610 Class 2)
-1.  **Solder Fillet**: Solder joints on SOT-23 (Q1), TSOT26 (U2), and SO-PowerPAD-8 (U1) must show a positive concave meniscus fillet, showing good wetting.
+1.  **Solder Fillet**: Solder joints on SOT-23 (Q1), SOT-23-6 (ESD1), TSOT26 (U2), SOIC-8 (U6), and SO-PowerPAD-8 (U1) must show a positive concave meniscus fillet, showing good wetting.
 2.  **Thermal Vias**: Solder voiding inside the thermal vias under the LM5017 exposed pad must not exceed 25% of the total pad area (measured via X-ray inspection).
 3.  **Through-Hole Connectors**: Verify that Molex connector solder pins project $0.5\text{mm}$ to $1.5\text{mm}$ beyond the bottom solder pad, showing full barrel fill (minimum 75% vertical fill).

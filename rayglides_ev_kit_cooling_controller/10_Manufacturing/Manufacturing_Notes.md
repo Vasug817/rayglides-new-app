@@ -24,7 +24,7 @@ This document provides production guidelines, board materials, soldering profile
     *   *Time Above Liquidus ($217^\circ\text{C}$)*: 60-90 seconds
     *   *Peak Reflow Temp*: $245^\circ\text{C}$ to $250^\circ\text{C}$ for 20-30 seconds
 *   **Manual Assembly**:
-    *   Through-hole connectors J1, J2, J3, and temperature sensor U4 can be wave-soldered or hand-soldered at $350^\circ\text{C}$ using lead-free wire (Sn96.5/Ag3.0/Cu0.5).
+    *   Through-hole connectors J1, J2, J3, J4, J5 and temperature sensor U4 can be wave-soldered or hand-soldered at $350^\circ\text{C}$ using lead-free wire (Sn96.5/Ag3.0/Cu0.5).
     *   Ensure the exposed thermal pad of U1 (LM5017) is fully reflowed to the PCB thermal via pad to prevent regulator overheating.
 
 ---
@@ -40,3 +40,6 @@ This document provides production guidelines, board materials, soldering profile
 3.  **Sensor Cable Harness (J3)**:
     *   *Connector Shell*: Molex Micro-Fit 3.0 3-circuit housing (43645-0300)
     *   *Wire Gauge*: **24 AWG** (shielded 3-conductor cable; shield must be connected to GND_SENS at the PCB side only to minimize EMI loop pickup)
+4.  **CAN Bus Interface Harness (J4)**:
+    *   *Connector Shell*: Molex Micro-Fit 3.0 2-circuit housing (43645-0200)
+    *   *Wire Gauge*: **24 AWG** (twisted pair cable, $120\,\Omega$ nominal characteristic impedance)

@@ -15,11 +15,14 @@ This document details the heat dissipation calculations, temperature rises, sens
     *   *Output Current*: 200mA at 5V
     *   *Efficiency*: ~92%
     *   *Total Power Loss*: $P_{loss} = 5\text{V} \times 0.2\text{A} \times (1.087 - 1) = 0.087\text{ W}$ (87 mW)
-3.  **AP2112K-3.3 LDO Regulator (U3)**:
+3.  **TJA1050 CAN Transceiver (U6)**:
+    *   *Output Current*: 50mA peak, 25mA average at 5V
+    *   *Total Power Loss*: $P_{loss} = 5\text{V} \times 0.025\text{A} = 0.125\text{ W}$ (125 mW)
+4.  **AP2112K-3.3 LDO Regulator (U3)**:
     *   *Input Voltage*: 5V
-    *   *Output Voltage/Current*: 3.3V at 150mA average
+    *   *Output Voltage/Current*: 150mA average
     *   *Total Power Loss*: $P_{loss} = (5\text{V} - 3.3\text{V}) \times 0.15\text{A} = 0.255\text{ W}$ (255 mW)
-4.  **AO3400A switching MOSFET (Q1)**:
+5.  **AO3400A switching MOSFET (Q1)**:
     *   *Continuous Current*: 150mA (Delta Fan)
     *   *RDS(on)*: 33 mΩ
     *   *Total Power Loss*: $P_{loss} = I^2 \times R_{DS(on)} = (0.15\text{A})^2 \times 0.033\Omega = 0.00074\text{ W}$ (0.74 mW)
@@ -33,6 +36,10 @@ Assuming a maximum enclosure ambient temperature $T_A = 65^\circ\text{C}$ in sum
     *   SO PowerPAD-8 Thermal Resistance $R_{\theta JA} = 40^\circ\text{C/W}$ (with solid ground plane and thermal vias).
     *   $\Delta T_J = 0.84\text{W} \times 40^\circ\text{C/W} = 33.6^\circ\text{C}$ rise.
     *   $T_{J\_U1} = 65^\circ\text{C} + 33.6^\circ\text{C} = 98.6^\circ\text{C}$ (safe margin below junction limit $150^\circ\text{C}$).
+*   **TJA1050 CAN Transceiver Junction ($T_{J\_U6}$)**:
+    *   SOIC-8 Thermal Resistance $R_{\theta JA} = 160^\circ\text{C/W}$.
+    *   $\Delta T_J = 0.125\text{W} \times 160^\circ\text{C/W} = 20^\circ\text{C}$ rise.
+    *   $T_{J\_U6} = 65^\circ\text{C} + 20^\circ\text{C} = 85^\circ\text{C}$ (safe margin).
 *   **AP2112K LDO Junction ($T_{J\_U3}$)**:
     *   SOT-25 Thermal Resistance $R_{\theta JA} = 250^\circ\text{C/W}$.
     *   $\Delta T_J = 0.255\text{W} \times 250^\circ\text{C/W} = 63.75^\circ\text{C}$ rise.

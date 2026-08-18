@@ -7,17 +7,21 @@ This document details the external wiring harness hookups and connector interfac
 ## 1. Wiring Harness Layout Diagram
 
 ```text
-               +----------------------------------------+
-               |      COOLING CONTROLLER BOARD          |
-               |                                        |
-               |   [J1]               [J2]        [J3]  |
-               +────┬──────────────────┬───────────┬────+
-                    │                  │           │
-           (48V vehicle input)     (To Fan)   (To Temp Sensor)
-                    │                  │           │
-       Pin 1: Red (48V+)      Pin 1: Red   Pin 1: Red (+5V)
-       Pin 2: Blk (GND)       Pin 2: Blk   Pin 2: Wht (Vout)
-                                           Pin 3: Blk (GND)
+               +---------------------------------------------------------+
+               |              COOLING CONTROLLER BOARD                   |
+               |                                                         |
+               |   [J1]               [J2]        [J3]        [J4]  [J5] |
+               +────┬──────────────────┬───────────┬───────────┬─────┬───+
+                    │                  │           │           │     │
+           (48V vehicle input)     (To Fan)   (To Temp Sensor) │  (USB-C)
+                    │                  │           │           │
+       Pin 1: Red (48V+)      Pin 1: Red   Pin 1: Red (+5V)    │
+       Pin 2: Blk (GND)       Pin 2: Blk   Pin 2: Wht (Vout)   │
+                                           Pin 3: Blk (GND)    │
+                                                               │
+                                                       (CAN Bus Connection)
+                                                        Pin 1: Yel (CANH)
+                                                        Pin 2: Grn (CANL)
 ```
 
 ---
@@ -47,3 +51,10 @@ This document details the external wiring harness hookups and connector interfac
     *   **Pin 2**: Analog Vout signal return (White or Yellow, 24 AWG)
     *   **Pin 3**: Analog Ground return (Black, 24 AWG)
     *   *Shielding*: Twist the wires and wrap in copper braid shield. Connect the shield braid to **Pin 3** at the PCB side only.
+
+### D. Connector J4: CAN Bus Output
+*   **PCB Header Part**: Molex 43650-0215 (2-pin, single row, SMD, vertical)
+*   **Cable Housing Part**: Molex 43645-0200 (2-pin receptacle)
+*   **Pin Definitions**:
+    *   **Pin 1**: CANH differential data line (Yellow, 24 AWG twisted pair)
+    *   **Pin 2**: CANL differential data line (Green, 24 AWG twisted pair)

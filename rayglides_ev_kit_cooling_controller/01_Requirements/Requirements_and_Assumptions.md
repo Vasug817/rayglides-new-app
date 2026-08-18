@@ -20,6 +20,10 @@ Design a production-grade active cooling controller board for the electronics ki
 *   **Sensor Input Pin**: GPIO 4 (ADC1_CH3, analog voltage reading)
 *   **Temperature Sensor**: LM35DT analog temperature sensor (active, 10mV/°C linear response, TO-220 package for direct heatsink mounting)
 *   **Measurement Range**: 0°C to 100°C (corresponding output 0V to 1.0V)
+*   **Programming Port**: Native USB-C direct flashing interface via GPIO 19 and 20.
+*   **Communication Bus**: Integrated TJA1050 CAN bus transceiver via GPIO 9 and 10.
+*   **ADC Calibration Reference**: Onboard LM4040AIM3-1.0 shunt voltage reference for ESP32-S3 ADC calibration.
+*   **Memory Isolation**: Complete isolation of the GPIO 26–37 range used by the Octal PSRAM.
 
 ## 4. Environmental and Mechanical Design
 *   **Operating Ambient Temperature**: -20°C to +65°C (automotive cabin/enclosure ambient)
