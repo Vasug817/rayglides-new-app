@@ -147,7 +147,7 @@ def convert_csv_to_pdf(csv_path, pdf_path):
     pdf.output(pdf_path)
 
 # Scan Desktop project folders and compile
-root_dir = "/Users/vasugupta/Desktop/RayGlides_EV_Kit_Cooling_Controller"
+root_dir = "/Users/vasugupta/Desktop/rayglides_ev_kit_cooling_controller"
 for dirpath, dirnames, filenames in os.walk(root_dir):
     for filename in filenames:
         full_path = os.path.join(dirpath, filename)
