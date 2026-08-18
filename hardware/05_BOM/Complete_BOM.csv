@@ -29,3 +29,14 @@ C8,Sensor Decoupling Cap,100nF 50V,Yageo,CC0603KRX7R9BB104,0603 (SMD),1,LM35 VCC
 J1,Vehicle Power Conn,Molex Micro-Fit 3.0,Molex,43650-0215,SMD Vertical,1,Primary vehicle power harness socket
 J2,Fan Output Conn,Molex Micro-Fit 3.0,Molex,43650-0215,SMD Vertical,1,Cooling fan wiring harness socket
 J3,Temp Sensor Conn,Molex Micro-Fit 3.0,Molex,43650-0315,SMD Vertical,1,Sensor extension cable harness socket
+U5,ADC Reference,1.0V 0.1% Shunt,Texas Instruments,LM4040AIM3-1.0/NOPB,SOT-23,1,MCU ADC precision analog reference diode
+U6,CAN Transceiver,High Speed Transceiver,NXP,TJA1050T/3,SOIC-8,1,Automotive CAN bus physical layer transceiver
+ESD1,USB ESD Protection,Low Capacitance Clamp,STMicroelectronics,USBLC6-2SC6,SOT-23-6,1,Native USB D+/D- lines ESD protection
+D6,Backpower Diode,20V 2A Schottky,ON Semiconductor,MBRA210LT3G,SMA,1,USB-C programming VBUS back-power protection
+J5,USB Interface,USB Type-C Connector,Amphenol,10129424-00021LF,16-pin SMT,1,ESP32-S3 direct USB-C JTAG/serial flashing port
+R8 R9,CC Pull-downs,5.1k 5%,Yageo,RC0603JR-075K1L,0603,2,USB-C CC line pull-down configuration resistors
+R10 R11,USB Damping,22R 1%,Yageo,RC0603FR-0722RL,0603,2,High-speed native USB signal damping resistors
+R12 R13,CAN Termination,60R 1%,Yageo,RC0603FR-0760RL,0603,2,Split CAN bus 120R termination resistors
+C11,VBUS Filter Cap,4.7uF 10V,Murata,GRM188R61A475KE15D,0603,1,USB-C power input filter capacitor
+C12,CAN Filter Cap,4.7nF 50V,Yageo,CC0603KRX7R9BB472,0603,1,Split CAN termination common-mode filter capacitor
+J4,CAN Bus Output,Molex Micro-Fit 3.0,Molex,43650-0215,SMD Vertical,1,CAN interface vehicle bus wire connector

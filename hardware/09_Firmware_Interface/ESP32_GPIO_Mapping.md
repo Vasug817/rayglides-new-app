@@ -1,6 +1,6 @@
-# RayGlides 3W/4W EV Kit Cooling Controller — ESP32 GPIO Mapping
+# RayGlides 3W/4W EV Kit Cooling Controller — ESP32 GPIO Mapping (Optimized for ESP32-S3-N16R8)
 
-This document provides a reference mapping of the ESP32-S3-N16R8 pins to the hardware interfaces, verified against `/Users/vasugupta/Downloads/RayGlides_EMS_firmware_PWM_AWS/RayGlides_EMS/include/config.h`.
+This document provides a reference mapping of the ESP32-S3-N16R8 pins to the hardware interfaces, verified against your PlatformIO source code definitions.
 
 ---
 
@@ -15,8 +15,8 @@ This document provides a reference mapping of the ESP32-S3-N16R8 pins to the har
 | **GPIO 6** | SOLAR_CURRENT_PIN | Analog Input | ADC1_CH5 — Solar current input |
 | **GPIO 7** | GRID_BUTTON_PIN | Digital Input | Pulled high, button connects to GND |
 | **GPIO 8** | MPPT_PWM_PIN | PWM Output | LEDC Channel 0, 5 kHz frequency, 8-bit resolution |
-| **GPIO 9** | CAN_TX_PIN | CAN TX | Connected to CAN Transceiver TXD |
-| **GPIO 10** | CAN_RX_PIN | CAN RX | Connected to CAN Transceiver RXD |
+| **GPIO 9** | CAN_TX_PIN | CAN TX | Connected to TJA1050 CAN Transceiver TXD |
+| **GPIO 10** | CAN_RX_PIN | CAN RX | Connected to TJA1050 CAN Transceiver RXD |
 | **GPIO 11** | RS485_TX_PIN | UART TX | Connected to UART2 TX |
 | **GPIO 12** | RS485_RX_PIN | UART RX | Connected to UART2 RX |
 | **GPIO 13** | RS485_DE_PIN | Digital Output | RS485 Transceiver direction pin (DE/RE) |
@@ -24,11 +24,14 @@ This document provides a reference mapping of the ESP32-S3-N16R8 pins to the har
 | **GPIO 15** | CHARGE_LED_PIN | Digital Output | Active High — Charging status indicator |
 | **GPIO 16** | FAULT_LED_PIN | Digital Output | Active High — Fault status indicator |
 | **GPIO 18** | FAN_PWM_PIN | PWM Output | LEDC Channel 1, 5 kHz frequency, 8-bit resolution |
+| **GPIO 19** | NATIVE_USB_D- | USB Data | Direct differential native USB D- programming line |
+| **GPIO 20** | NATIVE_USB_D+ | USB Data | Direct differential native USB D+ programming line |
 
 ---
 
 ## 2. Strapping Pin Audit (Safety Check)
 *   **GPIO 0, 3, 45, 46** are hardware strapping pins on the ESP32-S3. They are bypassed or skipped in this layout:
     *   `GPIO 3` (JTAG strapping pin) is skipped. `BATTERY_TEMP_PIN` was assigned to `GPIO 4` instead.
-    *   `GPIO 0`, `GPIO 45`, `GPIO 46` are unused in our configuration, ensuring clean boot-loading.
-*   **Octal PSRAM Constraints**: The ESP32-S3-N16R8 module uses Octal SPI PSRAM. All pins from `GPIO 26` through `GPIO 37` are reserved internally and must **never** be broken out or connected to external circuits. Our pinout strictly limits connections to the safe range `GPIO 1-18`, preventing memory collision crashes.
+    *   `GPIO 0`, `GPIO 45`, `GPIO 46` are unused in our configuration, ensuring clean bootloading.
+*   **Octal PSRAM Constraints**: The ESP32-S3-N16R8 module uses Octal SPI PSRAM. All pins from `GPIO 26` through `GPIO 37` are reserved internally and must **never** be broken out or connected to external circuits. Our pinout strictly limits connections to the safe range `GPIO 1-20`, preventing memory collision crashes.
+*   **Native USB OTG Support**: Utilizing `GPIO 19` and `GPIO 20` enables direct USB flashing and JTAG debugging without needing external bridge ICs (like CP2102/CH340), reducing cost and PCB surface area.
