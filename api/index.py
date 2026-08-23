@@ -674,12 +674,17 @@ def update_ride_status():
     conn = get_db()
     cursor = conn.cursor()
     
-    # Check ownership
-    cursor.execute("SELECT driver_id FROM rides WHERE id = ?", (ride_id,))
+    # Check ownership & active ride fallback
+    cursor.execute("SELECT * FROM rides WHERE id = ?", (ride_id,))
     ride = cursor.fetchone()
     if not ride:
-        conn.close()
-        return jsonify({"error": "Order not found"}), 404
+        cursor.execute("SELECT * FROM rides WHERE driver_id = ? AND status IN ('accepted', 'started') ORDER BY id DESC LIMIT 1", (user["id"],))
+        ride = cursor.fetchone()
+        if ride:
+            ride_id = ride['id']
+        else:
+            conn.close()
+            return jsonify({"error": "Order not found"}), 404
     if ride['driver_id'] != user["id"]:
         conn.close()
         return jsonify({"error": "Unauthorized: You are not the driver assigned to this order"}), 403
