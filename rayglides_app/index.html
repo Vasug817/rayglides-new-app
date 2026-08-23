@@ -26,6 +26,11 @@
   <!-- Babel for JSX -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+  <!-- Leaflet Interactive Maps & Google Maps Tile Engine -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDemoKeyRayGlides2026&libraries=places"></script>
+
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -90,6 +95,82 @@
     const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
       ? "http://localhost:5060"
       : window.location.origin;
+
+    function LiveTrackingMap({
+      lat = 28.6139,
+      lng = 77.2090,
+      pickup = null,
+      dropoff = null,
+      vehicleName = "RayGlides EV",
+      soc = 85,
+      height = "320px"
+    }) {
+      const mapContainerRef = React.useRef(null);
+      const leafletMap = React.useRef(null);
+      const markerRef = React.useRef(null);
+
+      React.useEffect(() => {
+        if (!mapContainerRef.current) return;
+        if (typeof L === 'undefined') return;
+
+        if (!leafletMap.current) {
+          const map = L.map(mapContainerRef.current, {
+            center: [lat, lng],
+            zoom: 14,
+            zoomControl: false
+          });
+
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; RayGlides Telemetry | OpenStreetMap',
+            maxZoom: 19
+          }).addTo(map);
+
+          const evIcon = L.divIcon({
+            className: 'custom-ev-marker',
+            html: `
+              <div style="position:relative; width:32px; height:32px;">
+                <div style="position:absolute; width:44px; height:44px; top:-6px; left:-6px; border-radius:50%; background:rgba(16, 185, 129, 0.25); animation:ping 1.8s infinite;"></div>
+                <div style="width:32px; height:32px; border-radius:50%; background:#10B981; border:3px solid #FFFFFF; box-shadow:0 0 14px rgba(16,185,129,0.9); display:flex; align-items:center; justify-content:center; color:#FFF; font-weight:bold; font-size:12px;">⚡</div>
+              </div>
+            `,
+            iconSize: [32, 32],
+            iconAnchor: [16, 16]
+          });
+
+          const marker = L.marker([lat, lng], { icon: evIcon }).addTo(map);
+          marker.bindPopup(`<b>${vehicleName}</b><br>SoC: ${soc}%<br>Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`);
+
+          markerRef.current = marker;
+          leafletMap.current = map;
+        } else {
+          if (markerRef.current) {
+            markerRef.current.setLatLng([lat, lng]);
+            markerRef.current.getPopup().setContent(`<b>${vehicleName}</b><br>SoC: ${soc}%<br>Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`);
+            leafletMap.current.panTo([lat, lng]);
+          }
+        }
+      }, [lat, lng, soc, vehicleName]);
+
+      return (
+        <div className="relative w-full rounded-2xl overflow-hidden border border-gray-800 shadow-2xl">
+          <div ref={mapContainerRef} style={{ height: height, width: '100%' }}></div>
+
+          <div className="absolute top-3 left-3 z-[1000] bg-gray-900/90 backdrop-blur border border-gray-800 px-3 py-1.5 rounded-xl text-[11px] font-mono flex items-center gap-2 text-white shadow-md">
+            <span className="w-2.5 h-2.5 rounded-full bg-cyberGreen-500 animate-ping"></span>
+            <span>{lat.toFixed(4)}°N, {lng.toFixed(4)}°E</span>
+            <span className="text-gray-600">|</span>
+            <span className="text-cyberGreen-400 font-bold">{soc}% SoC</span>
+          </div>
+
+          <button 
+            onClick={() => leafletMap.current && leafletMap.current.setView([lat, lng], 15)}
+            className="absolute bottom-3 right-3 z-[1000] bg-gray-900/90 hover:bg-gray-800 border border-gray-800 text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 shadow-lg backdrop-blur"
+          >
+            <span>🎯 Re-center</span>
+          </button>
+        </div>
+      );
+    }
 
     function App() {
       const [user, setUser] = useState(null);
@@ -849,6 +930,24 @@
                   </div>
                 </div>
 
+                {/* Live Interactive GPS Map */}
+                <div className="glass-card p-4 rounded-2xl space-y-2 border-l-4 border-cyberGreen-500">
+                  <div className="flex justify-between items-center mb-1">
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                      <i data-lucide="navigation" className="w-3.5 h-3.5 text-cyberGreen-500"></i>
+                      Live Vehicle GPS Tracking
+                    </h3>
+                    <span className="text-[10px] text-cyberGreen-400 font-mono font-bold">LIVE MAP</span>
+                  </div>
+                  <LiveTrackingMap 
+                    lat={telemetry.latitude || 28.6139} 
+                    lng={telemetry.longitude || 77.2090} 
+                    vehicleName={`${user.name} (${telemetry.license_plate})`}
+                    soc={telemetry.soc || 80}
+                    height="240px"
+                  />
+                </div>
+
                 {/* Vehicle Selection Display */}
                 <div className="glass-card p-4 rounded-2xl relative overflow-hidden flex flex-col border-l-4 border-electricBlue-500">
                   <h3 className="text-sm font-bold text-white mb-2 self-start flex items-center gap-2">
@@ -917,6 +1016,19 @@
                         <span className="text-gray-400">Earnings:</span>
                         <span className="font-extrabold text-sm text-yellow-500">₹{activeRide.fare}</span>
                       </div>
+                    </div>
+
+                    {/* Interactive Delivery Tracking Map */}
+                    <div className="pt-1">
+                      <LiveTrackingMap 
+                        lat={telemetry?.latitude || 28.6139} 
+                        lng={telemetry?.longitude || 77.2090} 
+                        pickup={activeRide.pickup_location}
+                        dropoff={activeRide.dropoff_location}
+                        vehicleName={activeRide.rider_name}
+                        soc={telemetry?.soc || 80}
+                        height="200px"
+                      />
                     </div>
 
                     {/* Timeline Tracker */}
@@ -1342,27 +1454,26 @@
                           <i data-lucide="navigation" className="w-4 h-4 text-cyberGreen-500"></i>
                           Live Fleet Tracking — {selectedFleetVehicle.driver_name} ({selectedFleetVehicle.license_plate})
                         </h3>
-                        <button onClick={() => setSelectedFleetVehicle(null)} className="text-xs text-gray-500 hover:text-white">Close Live Tracking</button>
+                        <button onClick={() => setSelectedFleetVehicle(null)} className="text-xs text-gray-500 hover:text-white font-semibold">Close Live Tracking</button>
                       </div>
 
-                      <div className="w-full h-80 rounded-2xl bg-gray-950 relative overflow-hidden border border-gray-800/50 flex items-center justify-center">
-                        <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#3B82F6_1px,transparent_1px),linear-gradient(to_bottom,#3B82F6_1px,transparent_1px)] bg-[size:30px_30px]"></div>
+                      <LiveTrackingMap 
+                        lat={selectedFleetVehicle.latitude || 28.6139} 
+                        lng={selectedFleetVehicle.longitude || 77.2090} 
+                        vehicleName={`${selectedFleetVehicle.driver_name} (${selectedFleetVehicle.license_plate})`}
+                        soc={selectedFleetVehicle.soc || 80}
+                        height="360px"
+                      />
 
-                        {/* GPS pin */}
-                        <div className="absolute text-center transform -translate-x-1/2 -translate-y-1/2" style={{
-                          top: '50%',
-                          left: '50%'
-                        }}>
-                          <div className="w-14 h-14 rounded-full bg-cyberGreen-500/10 absolute -left-4 -top-4 animate-ping"></div>
-                          <div className="w-6 h-6 rounded-full bg-cyberGreen-500 border-2 border-white flex items-center justify-center shadow-lg relative z-10">
-                            <i data-lucide="truck" className="w-3.5 h-3.5 text-white"></i>
-                          </div>
+                      <div className="grid grid-cols-3 gap-3 text-xs pt-2">
+                        <div className="bg-gray-950 p-2.5 rounded-xl border border-gray-800">
+                          <span className="text-gray-500">Device ID:</span> <span className="font-mono text-white block">{selectedFleetVehicle.device_id}</span>
                         </div>
-
-                        <div className="absolute top-4 left-4 bg-gray-900/90 border border-gray-800 p-3 rounded-xl text-xs space-y-1 z-10">
-                          <div><span className="text-gray-500">Device MAC:</span> <span className="font-mono text-white">{selectedFleetVehicle.device_id}</span></div>
-                          <div><span className="text-gray-500">Coordinates:</span> <span className="font-mono text-cyberGreen-400">{(selectedFleetVehicle.latitude || 28.6139).toFixed(6)}°N, {(selectedFleetVehicle.longitude || 77.2090).toFixed(6)}°E</span></div>
-                          <div><span className="text-gray-500">SOC / SOH:</span> <span className="font-semibold text-white">{selectedFleetVehicle.soc || 0}% / {selectedFleetVehicle.soh || 100}%</span></div>
+                        <div className="bg-gray-950 p-2.5 rounded-xl border border-gray-800">
+                          <span className="text-gray-500">State of Health:</span> <span className="font-semibold text-cyberGreen-400 block">{selectedFleetVehicle.soh || 98}%</span>
+                        </div>
+                        <div className="bg-gray-950 p-2.5 rounded-xl border border-gray-800">
+                          <span className="text-gray-500">Battery Temp:</span> <span className="font-semibold text-yellow-400 block">{selectedFleetVehicle.battery_temp || 26.5}°C</span>
                         </div>
                       </div>
                     </div>
