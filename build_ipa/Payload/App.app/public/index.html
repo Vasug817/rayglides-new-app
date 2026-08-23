@@ -130,60 +130,6 @@
         setTimeout(() => setAlertMsg(null), 4000);
       };
 
-      // Session auto-login from localStorage
-      useEffect(() => {
-        try {
-          const savedToken = localStorage.getItem("rayglides_token");
-          const savedUser = localStorage.getItem("rayglides_user");
-          if (savedToken && savedUser) {
-            const parsedUser = JSON.parse(savedUser);
-            setToken(savedToken);
-            setUser(parsedUser);
-            setView(parsedUser.role === 'admin' ? "admin_dashboard" : "driver_dashboard");
-          }
-        } catch (e) {}
-      }, []);
-
-      const handleLogout = () => {
-        localStorage.removeItem("rayglides_token");
-        localStorage.removeItem("rayglides_user");
-        setToken(null);
-        setUser(null);
-        setView("login");
-        showAlert("Signed out successfully.");
-      };
-
-      const triggerEmergencySOS = () => {
-        if (!token) return;
-        fetch(`${API_URL}/api/driver/trigger-sos`, {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          }
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.message) showAlert(`🚨 ${data.message}`);
-        });
-      };
-
-      const handleSetCoolingFan = (fanDuty) => {
-        if (!token) return;
-        fetch(`${API_URL}/api/hardware/set-cooling`, {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify({ fan_duty: fanDuty })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.message) showAlert(data.message);
-        });
-      };
-
       // Periodic driver updates
       useEffect(() => {
         if (!token || !user) return;
@@ -311,10 +257,6 @@
           } else {
             setToken(data.token);
             setUser(data.user);
-            try {
-              localStorage.setItem("rayglides_token", data.token);
-              localStorage.setItem("rayglides_user", JSON.stringify(data.user));
-            } catch(e){}
             if (data.user.role === 'admin') {
               setView("admin_dashboard");
             } else {
@@ -393,10 +335,6 @@
           setLoading(false);
           setToken(data.token);
           setUser(data.user);
-          try {
-            localStorage.setItem("rayglides_token", data.token);
-            localStorage.setItem("rayglides_user", JSON.stringify(data.user));
-          } catch(e){}
           setView("driver_dashboard");
           showAlert(`Welcome, Google User: ${gname}!`);
         })

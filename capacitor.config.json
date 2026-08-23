@@ -1,0 +1,15 @@
+{
+  "appId": "com.rayglides.ems.driver",
+  "appName": "RayGlides",
+  "webDir": "rayglides_app",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://rayglides-new-app.vercel.app",
+    "cleartext": true
+  },
+  "ios": {
+    "contentInset": "always",
+    "allowsLinkPreview": false,
+    "handleApplicationNotifications": true
+  }
+}

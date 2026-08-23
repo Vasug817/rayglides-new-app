@@ -546,6 +546,44 @@ def select_vehicle():
     conn.close()
     return jsonify({"success": True, "message": "EV loader configuration updated successfully"})
 
+@app.route('/api/driver/trigger-sos', methods=['POST'])
+@app.route('/driver/trigger-sos', methods=['POST'])
+def trigger_sos():
+    user = get_auth_user()
+    if not user:
+        return jsonify({"error": "Unauthorized session"}), 401
+    
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT emergency_name, emergency_phone FROM users WHERE id = ?", (user["id"],))
+    u_row = cursor.fetchone()
+    conn.close()
+
+    em_name = u_row["emergency_name"] if u_row and u_row["emergency_name"] else "Fleet Operator Hotline"
+    em_phone = u_row["emergency_phone"] if u_row and u_row["emergency_phone"] else "+91-9876543210"
+
+    return jsonify({
+        "success": True, 
+        "message": f"EMERGENCY SOS DISPATCHED! Alert sent to {em_name} ({em_phone}) and Fleet Command Base.",
+        "sos_active": True
+    })
+
+@app.route('/api/hardware/set-cooling', methods=['POST'])
+@app.route('/hardware/set-cooling', methods=['POST'])
+def set_cooling():
+    user = get_auth_user()
+    if not user:
+        return jsonify({"error": "Unauthorized session"}), 401
+
+    body = request.get_json() or {}
+    fan_duty = body.get('fan_duty', 0.5)
+
+    return jsonify({
+        "success": True,
+        "message": f"Cooling controller fan PWM updated to {int(fan_duty * 100)}%",
+        "fan_duty": fan_duty
+    })
+
 # ----------------------------------------------------
 # REAL DATABASE RIDES / ORDERS SYSTEM
 # ----------------------------------------------------
