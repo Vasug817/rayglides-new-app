@@ -91,10 +91,10 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // Auto-detect production URL vs local server port 5050
-    const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-      ? "http://localhost:5060"
-      : window.location.origin;
+    // Universal Production API URL for Web, iOS Capacitor, and Standalone App
+    const API_URL = window.location.origin.includes("rayglides-new-app.vercel.app")
+      ? window.location.origin
+      : "https://rayglides-new-app.vercel.app";
 
     function LiveTrackingMap({
       lat = 28.6139,
@@ -607,8 +607,13 @@
       };
 
       useEffect(() => {
-        lucide.createIcons();
-      });
+        const timer = setTimeout(() => {
+          if (typeof lucide !== 'undefined' && lucide.createIcons) {
+            lucide.createIcons();
+          }
+        }, 100);
+        return () => clearTimeout(timer);
+      }, [view, telemetry, activeRide, availableRides, selectedFleetVehicle]);
 
       return (
         <div className="flex-grow flex flex-col min-h-screen">
