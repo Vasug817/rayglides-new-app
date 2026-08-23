@@ -172,6 +172,27 @@
       );
     }
 
+    function AppLogo({ size = "medium", className = "" }) {
+      return (
+        <div className={`flex items-center gap-2.5 ${className} inline-flex align-middle`}>
+          <img 
+            src="rayglides_logo.png" 
+            alt="RayGlides Logo" 
+            className={size === "small" ? "h-7 object-contain drop-shadow-md" : size === "large" ? "h-14 object-contain drop-shadow-xl" : "h-9 object-contain drop-shadow-lg"}
+            onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
+          />
+          <div className="flex flex-col text-left">
+            <span className={`font-extrabold tracking-tight text-white ${size === "small" ? "text-sm" : size === "large" ? "text-2xl" : "text-lg"}`}>
+              Ray<span className="text-cyberGreen-400">Glides</span>
+            </span>
+            {size !== "small" && (
+              <span className="text-[9px] text-gray-400 font-mono tracking-widest uppercase -mt-0.5">Solar EMS Platform</span>
+            )}
+          </div>
+        </div>
+      );
+    }
+
     function App() {
       const [user, setUser] = useState(null);
       const [token, setToken] = useState(null);
@@ -645,9 +666,8 @@
                   <div className="absolute -top-10 -right-10 w-32 h-32 bg-cyberGreen-500/10 rounded-full blur-3xl"></div>
                   <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-electricBlue-500/10 rounded-full blur-3xl"></div>
                   
-                  <div className="text-center mb-8">
-                    <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyberGreen-400 to-electricBlue-500">RayGlides</h1>
-                    <p className="text-gray-400 text-xs mt-1">Smart Solar EMS Portal</p>
+                  <div className="text-center mb-6 flex flex-col items-center justify-center">
+                    <AppLogo size="large" />
                   </div>
 
                   {authMode === "password" ? (
@@ -758,7 +778,10 @@
             {view === "signup" && (
               <div className="flex-grow flex items-center justify-center p-6 bg-radial bg-gradient-to-tr from-[#020617] to-[#0F172A]">
                 <div className="w-full max-w-sm glass-card p-6 rounded-3xl border border-gray-800 shadow-2xl relative overflow-hidden">
-                  <h2 className="text-xl font-bold mb-4 text-white">Create Account</h2>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-bold text-white">Create Account</h2>
+                    <AppLogo size="small" />
+                  </div>
                   <form onSubmit={handleSignup} className="space-y-4">
                     <div>
                       <label className="text-[10px] text-gray-400 font-semibold block mb-1">Full Name</label>
@@ -1256,8 +1279,7 @@
                 {/* Admin Sidebar */}
                 <aside className="w-full lg:w-64 bg-gray-950/80 border-r border-gray-800/60 p-5 flex flex-col gap-6">
                   <div>
-                    <h1 className="text-xl font-bold tracking-wider text-white">RayGlides Admin</h1>
-                    <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Fleet Command Center</p>
+                    <AppLogo size="medium" />
                   </div>
                   <div className="flex-grow space-y-2">
                     <div className="bg-gray-900/60 border border-gray-850 p-3 rounded-xl flex items-center gap-3">
