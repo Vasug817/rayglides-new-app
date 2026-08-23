@@ -1,9 +1,12 @@
 import urllib.request
 import json
 import time
+import ssl
 
 API_BASE = "https://rayglides-new-app.vercel.app/api"
 TEST_CONTACT = "driver_test_99@rayglides.com"
+
+ssl_context = ssl._create_unverified_context()
 
 def make_request(path, data=None, headers=None):
     url = f"{API_BASE}{path}"
@@ -15,7 +18,7 @@ def make_request(path, data=None, headers=None):
     req = urllib.request.Request(url, data=req_data, headers=req_headers, method='POST' if data is not None else 'GET')
     
     try:
-        with urllib.request.urlopen(req, timeout=8) as res:
+        with urllib.request.urlopen(req, timeout=8, context=ssl_context) as res:
             return res.status, json.loads(res.read().decode('utf-8'))
     except urllib.error.HTTPError as e:
         return e.code, json.loads(e.read().decode('utf-8'))
